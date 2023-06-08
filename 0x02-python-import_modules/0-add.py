@@ -1,3 +1,5 @@
 #!/usr/bin/python3
 def add(a, b)
-print(add)
+a=1
+b=1
+print(a+b)
