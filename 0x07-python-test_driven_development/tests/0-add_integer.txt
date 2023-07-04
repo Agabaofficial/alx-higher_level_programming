@@ -1,0 +1,28 @@
+# Integer addition function
+
+def add_integer(a, b):
+    """
+    Adds two integers and returns the result.
+    
+    Args:
+        a (int): First integer.
+        b (int): Second integer.
+    
+    Returns:
+        int: The sum of the two integers.
+    
+    Raises:
+        TypeError: If either `a` or `b` is not an integer.
+        OverflowError: If the result of the addition exceeds the maximum integer value.
+    """
+    if not isinstance(a, int):
+        raise TypeError("a must be an integer")
+    if not isinstance(b, int):
+        raise TypeError("b must be an integer")
+    
+    try:
+        result = a + b
+    except OverflowError:
+        raise OverflowError("cannot convert result to integer")
+    
+    return result
