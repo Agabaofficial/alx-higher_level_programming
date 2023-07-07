@@ -1,28 +1,71 @@
-# Integer addition function
+The ``0-add_integer`` module
+============================
 
-def add_integer(a, b):
-    """
-    Adds two integers and returns the result.
-    
-    Args:
-        a (int): First integer.
-        b (int): Second integer.
-    
-    Returns:
-        int: The sum of the two integers.
-    
-    Raises:
-        TypeError: If either `a` or `b` is not an integer.
-        OverflowError: If the result of the addition exceeds the maximum integer value.
-    """
-    if not isinstance(a, int):
-        raise TypeError("a must be an integer")
-    if not isinstance(b, int):
-        raise TypeError("b must be an integer")
-    
-    try:
-        result = a + b
-    except OverflowError:
-        raise OverflowError("cannot convert result to integer")
-    
-    return result
+Using ``add_integer``
+---------------------
+
+This is an example text file in reStructuredText format. First import
+``add_integer`` from the ``0-add_integer`` module:
+
+>>> add_integer = __import__('0-add_integer').add_integer
+
+Now use it:
+
+>>> add_integer(2, 3)
+5
+
+>>> add_integer(100.3, -2)
+98
+
+>>> add_integer(-True, False)
+-1
+
+>>> add_integer(-True, -False)
+-1
+
+>>> add_integer(True, False)
+1
+
+>>> add_integer(True, -False)
+1
+
+>>> add_integer(100.3, 100.3)
+200
+
+>>> add_integer("school", 100.3)
+Traceback (most recent call last):
+...
+TypeError: a must be an integer
+
+>>> add_integer("Holberton", "School")
+Traceback (most recent call last):
+...
+TypeError: a must be an integer
+
+>>> add_integer(None, "School")
+Traceback (most recent call last):
+...
+TypeError: a must be an integer
+
+>>> add_integer(5.25, 3.3)
+8
+
+>>> add_integer(10, None)
+Traceback (most recent call last):
+...
+TypeError: b must be an integer
+
+>>> add_integer("adc", 10)
+Traceback (most recent call last):
+...
+TypeError: a must be an integer
+
+>>> add_integer(float('inf'),8)
+Traceback (most recent call last):
+...
+OverflowError: cannot convert float infinity to integer
+
+>>> add_integer(float('NaN'), 7)
+Traceback (most recent call last):
+...
+ValueError: cannot convert float NaN to integer
