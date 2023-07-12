@@ -5,11 +5,11 @@ contains the MyList class
 
 
 class MyList(list):
-    """subclass for the list"""
+    """a subclass for list"""
     def __init__(self):
-        """initializes the object"""
+        """initializing the object"""
         super().__init__()
 
     def print_sorted(self):
-        """prints out the sorted list"""
+        """prints sorted list"""
         print(sorted(self))
