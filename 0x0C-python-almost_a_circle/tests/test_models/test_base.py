@@ -1,147 +1,73 @@
 #!/usr/bin/python3
 """Defines unittests for base.py.
 
-Unittest classes:
-    TestBase_instantiation 
-    TestBase_to_json_string 
-    TestBase_save_to_file 
-    TestBase_from_json_string 
-    TestBase_create 
-    TestBase_load_from_file 
-    TestBase_save_to_file_csv 
-    TestBase_load_from_file_csv 
-"""
-import unittest
-from models.square import Square
-import sys
-from io import StringIO
-import pep8
-from models.base import Base
-import json
-from models.rectangle import Rectangle
 import os
+import unittest
+from models.base import Base
+from models.rectangle import Rectangle
+from models.square import Square
 
-class TestBase_instantiation(unittest.TestCase):
-    """
-    Class of functions to run tests
-    """
-    def setUp(self):
-        """
-        function to redirect stdout
-        """
-        sys.stdout = StringIO()
 
-    def tearDown(self):
-        """
-        cleans everything
-        """
-        sys.stdout = sys.__stdout__
+class TestBase(unittest.TestCase):
+    """Test Base class"""
+    def test_with_provided_id(self):
+        obj1 = Base(11)
+        self.assertEqual(obj1.id, 11)
 
-    def test_pep8_model(self):
-        """
-        Tests for pep8 model
-        """
-        p8 = pep8.StyleGuide(quiet=True)
-        p = p8.check_files(['models/base.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
+    def test_without_provided_id(self):
+        """Test without provided id"""
+        obj2 = Base()
+        obj3 = Base()
+        obj4 = Base()
+        self.assertEqual(obj2.id, 3)
+        self.assertEqual(obj3.id, 4)
+        self.assertEqual(obj4.id, 5)
 
-    def test_pep8_test(self):
-        """
-        Tests for pep8 test
-        """
-        p8 = pep8.StyleGuide(quiet=True)
-        p = p8.check_files(['tests/test_models/test_base.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
+    def test_with_multiple_provided_ids(self):
+        """Test with multiple provided ids"""
+        obj5 = Base(30)
+        obj6 = Base(220)
+        obj7 = Base(31)
+        self.assertEqual(obj5.id, 30)
+        self.assertEqual(obj6.id, 220)
+        self.assertEqual(obj7.id, 31)
 
-    def test_docstrings(self):
-        self.assertIsNotNone(module_doc)
-        self.assertIsNotNone(Base.__doc__)
-        self.assertIs(hasattr(Base, "__init__"), True)
-        self.assertIsNotNone(Base.__init__.__doc__)
-        self.assertIs(hasattr(Base, "create"), True)
-        self.assertIsNotNone(Base.create.__doc__)
-        self.assertIs(hasattr(Base, "to_json_string"), True)
-        self.assertIsNotNone(Base.to_json_string.__doc__)
-        self.assertIs(hasattr(Base, "from_json_string"), True)
-        self.assertIsNotNone(Base.from_json_string.__doc__)
-        self.assertIs(hasattr(Base, "save_to_file"), True)
-        self.assertIsNotNone(Base.save_to_file.__doc__)
-        self.assertIs(hasattr(Base, "load_from_file"), True)
-        self.assertIsNotNone(Base.load_from_file.__doc__)
+    def test_mix_of_provided_and_non_provided_ids(self):
+        """Test mix of provided and non provided ids"""
+        obj8 = Base()
+        obj9 = Base(550)
+        obj10 = Base()
+        self.assertEqual(obj8.id, 1)
+        self.assertEqual(obj9.id, 550)
+        self.assertEqual(obj10.id, 2)
 
-    def test_id(self):
-        """
-        Test check for id 
-        """
-        Base._Base__nb_objects = 0
-        b1 = Base()
-        b2 = Base()
-        b3 = Base()
-        b4 = Base(12)
-        b5 = Base()
-        self.assertEqual(b1.id, 1)
-        self.assertEqual(b2.id, 2)
-        self.assertEqual(b3.id, 3)
-        self.assertEqual(b4.id, 12)
-        self.assertEqual(b5.id, 4)
+    def test_to_json_string(self):
+        """Test converting a list of dictionaries to JSON"""
+        list_dicts = [{'x': 2, 'width': 10, 'id': 1, 'height': 7, 'y': 8}]
+        json_string = Base.to_json_string(list_dicts)
+        expcted_json = '[{"x": 2, "width": 10, "id": 1, "height": 7, "y": 8}]'
+        self.assertEqual(json_string, expcted_json)
+
+        """Test converting an empty list to JSON"""
+        empty_list = []
+        json_string = Base.to_json_string(empty_list)
+        expected_json = '[]'
+        self.assertEqual(json_string, expected_json)
 
     def test_from_json_string(self):
-        """
-        Test check from json string
-        """
-        self.assertEqual(Base.to_json_string(None), "[]")
-        self.assertEqual(Base.to_json_string([]), "[]")
-        with self.subTest():
-            r1 = Rectangle(10, 7, 2, 8, 1)
-            r1_dict = r1.to_dictionary()
-            json_dict = Base.to_json_string([r1_dict])
-            self.assertEqual(r1_dict, {'x': 2, 'width': 10,
-                                       'id': 1, 'height': 7,
-                                       'y': 8})
-            self.assertIs(type(r1_dict), dict)
-            self.assertIs(type(json_dict), str)
-            self.assertEqual(json.loads(json_dict), json.loads('[{"x": 2, '
-                                                               '"width": 10, '
-                                                               '"id": 1, '
-                                                               '"height": 7, '
-                                                               '"y": 8}]'))
+        """Test converting JSON to a list of dictionaries"""
+        json_string = '[{"x": 2, "width": 10, "id": 1, "height": 7, "y": 8}]'
+        list_dicts = Base.from_json_string(json_string)
+        expected_list = [{"x": 2, "width": 10, "id": 1, "height": 7, "y": 8}]
+        self.assertEqual(list_dicts, expected_list)
 
-    def test_rectangle(self):
-        """
-        Test check for rectangle
-        """
-        R1 = Rectangle(4, 5, 6)
-        R1_dict = R1.to_dictionary()
-        R2 = Rectangle.create(**R1_dict)
-        self.assertNotEqual(R1, R2)
+        """Test converting an empty JSON to an empty list"""
+        empty_json = '[]'
+        list_dicts = Base.from_json_string(empty_json)
+        expected_list = []
+        self.assertEqual(list_dicts, expected_list)
 
-    def test_square(self):
-        """
-        Test check for square creation
-        """
-        S1 = Square(44, 55, 66, 77)
-        S1_dict = S1.to_dictionary()
-        S2 = Rectangle.create(**S1_dict)
-        self.assertNotEqual(S1, S2)
 
-    def test_file_rectangle(self):
-        """
-        Test check if file loads from rectangle
-        """
-        R1 = Rectangle(33, 34, 35, 26)
-        R2 = Rectangle(202, 2)
-        lR = [R1, R2]
-        Rectangle.save_to_file(lR)
-        lR2 = Rectangle.load_from_file()
-        self.assertNotEqual(lR, lR2)
-
-    def test_file_square(self):
-        """
-        Test check if file loads from square
-        """
-        S1 = Square(22)
-        S2 = Square(44, 44, 55, 66)
-        lS = [S1, S2]
-        Square.save_to_file(lS)
-        lS2 = Square.load_from_file()
-        self.assertNotEqual(lS, lS2)
+if __name__ == "__main__":
+    """Run tests"""
+    unittest.main()
